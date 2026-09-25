@@ -43,4 +43,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Sarvatobhadra-APK
-        path: sarvatobhadra/platforms/android/app/build/outputs/apk/release/*.apk
+        path: sarvatobhadra/**/*.apk
