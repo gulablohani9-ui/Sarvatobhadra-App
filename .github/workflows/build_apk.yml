@@ -1,0 +1,48 @@
+name: Build Sarvatobhadra APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Dependencies & Cordova
+      run: |
+        npm install
+        npm install -g cordova
+
+    - name: Create Cordova Project
+      run: |
+        cordova create sarvatobhadra com.example.sarvatobhadra Sarvatobhadra
+        cd sarvatobhadra
+        cordova platform add android
+
+    - name: Copy App Files to Cordova www
+      run: |
+        # सभी कोड फाइलें कॉपी करें
+        cp index.html style.css sbc-logic.js app.js sarvatobhadra/www/
+        # .se1 फाइलें कॉपी करें (ताकि ऐप ऑफलाइन काम करे)
+        cp *.se1 sarvatobhadra/www/ 2>/dev/null || true
+
+    - name: Build APK
+      run: |
+        cd sarvatobhadra
+        cordova build android --release
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: Sarvatobhadra-APK
+        path: sarvatobhadra/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
