@@ -18,6 +18,12 @@ jobs:
       with:
         node-version: '22'
 
+    - name: Setup Java JDK (Cordova के लिए ज़रूरी)
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
     - name: Install Cordova
       run: npm install -g cordova
 
@@ -29,18 +35,21 @@ jobs:
 
     - name: Copy Web Files to www
       run: |
-        # सभी कोड फाइलें कॉपी करें
-        cp index.html style.css sbc-logic.js app.js sarvatobhadra/www/ 2>/dev/null || true
-        # .se1 फाइलें कॉपी करें (ताकि ऐप ऑफलाइन काम करे)
-        cp *.se1 sarvatobhadra/www/ 2>/dev/null || true
+        cp index.html style.css sbc-logic.js app.js sarvatobhadra/www/ || true
+        cp *.se1 sarvatobhadra/www/ || true
+        echo "--- www फोल्डर की फाइलें देखें ---"
+        ls -la sarvatobhadra/www/
 
     - name: Build APK
       run: |
         cd sarvatobhadra
-        cordova build android --release
+        cordova build android --release --verbose
+        echo "--- APK फाइल कहाँ बनी है, यह देखें ---"
+        find . -name "*.apk"
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: Sarvatobhadra-APK
         path: sarvatobhadra/**/*.apk
+        if-no-files-found: error
