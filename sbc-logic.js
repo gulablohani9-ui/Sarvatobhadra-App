@@ -1,17 +1,26 @@
-import { SwissEphemeris, Planet, CalculationFlag } from '@swisseph/browser';
+// CDN से Swiss Ephemeris लोड करें (ताकि node_modules की जरूरत न पड़े)
+import { SwissEphemeris, Planet, CalculationFlag } from 'https://cdn.jsdelivr.net/npm/@swisseph/browser@1.0.0/dist/swisseph.js';
 
 let swe;
+export let gridData = [];
 
 export async function initEphemeris() {
-    swe = new SwissEphemeris();
-    await swe.init();
-    // .se1 फाइलें लोड करें (ध्यान दें: Cordova में ये फाइलें root में होंगी)
-    await swe.loadEphemerisFiles([
-        { name: 'sepl_18.se1', url: 'sepl_18.se1' },
-        { name: 'semo_18.se1', url: 'semo_18.se1' },
-        { name: 'seas_18.se1', url: 'seas_18.se1' }
-    ]);
-    console.log("Swiss Ephemeris Loaded!");
+    try {
+        swe = new SwissEphemeris();
+        await swe.init();
+        
+        // .se1 फाइलें लोड करें
+        await swe.loadEphemerisFiles([
+            { name: 'sepl_18.se1', url: 'sepl_18.se1' },
+            { name: 'semo_18.se1', url: 'semo_18.se1' },
+            { name: 'seas_18.se1', url: 'seas_18.se1' }
+        ]);
+        console.log("✅ Swiss Ephemeris लोड हो गया!");
+        return true;
+    } catch (error) {
+        console.error("❌ Ephemeris लोड करने में एरर:", error);
+        throw error;
+    }
 }
 
 export function getPlanetaryData(date) {
@@ -47,6 +56,7 @@ export function getPlanetaryData(date) {
 
 export function buildGrid() {
     const gridEl = document.getElementById('chakraGrid');
+    if (!gridEl) return;
     gridEl.innerHTML = '';
     for (let i = 0; i < 81; i++) {
         const cell = document.createElement('div');
