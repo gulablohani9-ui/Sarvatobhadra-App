@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarvatobhadra Chakra</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Sarvatobhadra Chakra</h1>
+            <button id="settingsBtn">⚙️ Settings</button>
+        </header>
+        <div class="controls">
+            <button id="refreshBtn">🔄 Refresh</button>
+        </div>
+        <div id="chakraGrid" class="chakra-grid"></div>
+        <div class="details-panel">
+            <h3>Vedha Details</h3>
+            <div id="vedhaOutput">Loading Swiss Ephemeris...</div>
+        </div>
+    </div>
+    <script type="module" src="sbc-logic.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
