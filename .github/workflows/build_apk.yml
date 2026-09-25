@@ -10,18 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout Code
       uses: actions/checkout@v4
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '22'
 
-    - name: Install Dependencies & Cordova
-      run: |
-        npm install
-        npm install -g cordova
+    - name: Install Cordova
+      run: npm install -g cordova
 
     - name: Create Cordova Project
       run: |
@@ -29,10 +27,10 @@ jobs:
         cd sarvatobhadra
         cordova platform add android
 
-    - name: Copy App Files to Cordova www
+    - name: Copy Web Files to www
       run: |
         # सभी कोड फाइलें कॉपी करें
-        cp index.html style.css sbc-logic.js app.js sarvatobhadra/www/
+        cp index.html style.css sbc-logic.js app.js sarvatobhadra/www/ 2>/dev/null || true
         # .se1 फाइलें कॉपी करें (ताकि ऐप ऑफलाइन काम करे)
         cp *.se1 sarvatobhadra/www/ 2>/dev/null || true
 
@@ -41,8 +39,8 @@ jobs:
         cd sarvatobhadra
         cordova build android --release
 
-    - - name: Upload APK
-  uses: actions/upload-artifact@v4
-  with:
-    name: Sarvatobhadra-APK
-    path: sarvatobhadra/platforms/android/app/build/outputs/apk/release/*.apk
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Sarvatobhadra-APK
+        path: sarvatobhadra/platforms/android/app/build/outputs/apk/release/*.apk
