@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: '22'
 
-    - name: Setup Java JDK (Cordova के लिए ज़रूरी)
+    - name: Setup Java JDK
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
@@ -43,7 +43,8 @@ jobs:
     - name: Build APK
       run: |
         cd sarvatobhadra
-        cordova build android --release --verbose
+        # यहाँ -- --packageType=apk लगाया गया है ताकि AAB की जगह APK बने
+        cordova build android --release -- --packageType=apk
         echo "--- APK फाइल कहाँ बनी है, यह देखें ---"
         find . -name "*.apk"
 
@@ -51,5 +52,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Sarvatobhadra-APK
-        path: sarvatobhadra/**/*.apk
+        path: sarvatobhadra/platforms/android/app/build/outputs/apk/release/*.apk
         if-no-files-found: error
