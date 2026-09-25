@@ -40,10 +40,32 @@ jobs:
         echo "--- www फोल्डर की फाइलें देखें ---"
         ls -la sarvatobhadra/www/
 
-    - name: Build APK
+    - name: Generate Keystore and Build JSON
       run: |
         cd sarvatobhadra
-        # यहाँ -- --packageType=apk लगाया गया है ताकि AAB की जगह APK बने
+        # 1. कीस्टोर जनरेट करें (पासवर्ड: 123456)
+        keytool -genkey -v -keystore my-release-key.keystore -alias myalias -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=App, OU=Dev, O=MyOrg, L=City, S=State, C=IN"
+        
+        # 2. build.json बनाएं ताकि Cordova खुद साइन करे
+        cat <<EOF > build.json
+        {
+          "android": {
+            "release": {
+              "keystore": "my-release-key.keystore",
+              "storePassword": "123456",
+              "alias": "myalias",
+              "password": "123456",
+              "keystoreType": "jks"
+            }
+          }
+        }
+        EOF
+        echo "Keystore और build.json तैयार हैं!"
+
+    - name: Build APK (Signed)
+      run: |
+        cd sarvatobhadra
+        # यहाँ build.json की मदद से APK साइन होकर बनेगा
         cordova build android --release -- --packageType=apk
         echo "--- APK फाइल कहाँ बनी है, यह देखें ---"
         find . -name "*.apk"
